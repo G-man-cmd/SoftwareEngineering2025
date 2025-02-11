@@ -4,6 +4,14 @@ py.init()
 screen = py.display.set_mode((1280, 720))
 clock = py.time.Clock()
 running = True
+FONT = py.font.Font(None, 50)
+input_box = py.Rect(100, 600, 200, 50)  # Position and size
+color_active = py.Color("dodgerblue2")
+color_inactive = py.Color("gray")
+color = color_inactive
+
+active = False
+user_text = ""
 
 def query():#gets initial data
     pass
@@ -31,16 +39,40 @@ def main_menue():
     game_screen()
 
 def game_screen():
+    global color, user_text, active
     running = True
-    py.display.set_caption("Game Screen")
+    py.display.set_caption("Player Entry Screen")
+    screen.fill("black")
     while running:
         for event in py.event.get():
             if event.type == py.QUIT:
                 running = False
-        screen.fill("black")
+            elif event.type == py.MOUSEBUTTONDOWN:
+                if input_box.collidepoint(event.pos):
+                    active = not active
+                else:
+                    active = False
+                color = color_active if active else color_inactive
+            elif event.type == py.KEYDOWN:
+                if active:
+                    if event.key == py.K_RETURN:
+                        print("Entered text:", user_text)  # Print input to console
+                        user_text = ""  # Clear input after pressing Enter
+                    elif event.key == py.K_BACKSPACE:
+                        user_text = user_text[:-1]  # Remove last character
+                    else:
+                        user_text += event.unicode  # Add typed character
+
+        # Draw text box
+        py.draw.rect(screen, color, input_box, 2)
+
+        # Render text
+        text_surface = FONT.render(user_text, True, (0, 0, 0))
+        screen.blit(text_surface, (input_box.x + 10, input_box.y + 10))
         
         py.display.flip()
-        #clock.tick(60)
+        clock.tick(60)
+        
     py.quit()
 
 main_menue()
