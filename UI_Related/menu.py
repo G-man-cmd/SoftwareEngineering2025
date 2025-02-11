@@ -23,7 +23,8 @@ def play_music():
     pass
 
 def main_menue():
-    image = py.image.load("turtle.png")
+    image = py.image.load("logo.jpg")
+    image = py.transform.scale(image, (1280, 720))
     py.display.set_caption("Main Menu")
     screen.fill("black")
     screen.blit(image, (0, 0))
@@ -74,6 +75,9 @@ def game_screen():
         clock.tick(60)
         
     py.quit()
+
+def play_action():
+    pass
 
 main_menue()
 #game_screen()
