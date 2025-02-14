@@ -7,15 +7,20 @@ running = True
 FONT = py.font.Font(None, 50)
 
 #input box specifications.
-input_box = py.Rect(30, 30, 280, 50)  # Input box dimensions
+input_box = py.Rect(30, 30, 160, 50)  # Input box dimensions
 color_active = py.Color("dodgerblue2")
 color_inactive = py.Color("gray")
 color = color_inactive
 
-teamR = []
-teamL = []
+teamR = [""] * 15
+teamL = [""] * 15
+
+# Input box dimensions
+input_boxes_L = [py.Rect(300, 50 + i * 40, 200, 30) for i in range(15)]  # Left side input fields
+input_boxes_R = [py.Rect(690, 50 + i * 40, 200, 30) for i in range(15)]  # Right side input fields
 
 active = False
+active_box = None
 user_text = ""
 
 def query():#gets initial data
@@ -45,7 +50,7 @@ def main_menue():
     game_screen()
 
 def game_screen():
-    global active, user_text, color
+    global active_box
 
     running = True
     image = py.image.load("PSS.png")
@@ -61,31 +66,40 @@ def game_screen():
             if event.type == py.QUIT:
                 running = False
             elif event.type == py.MOUSEBUTTONDOWN:
-                # Check if input box is clicked
-                if input_box.collidepoint(event.pos):
-                    active = not active
-                else:
-                    active = False
-                color = color_active if active else color_inactive
+                # Check if any input box is clicked
+                active_box = None
+                for i, box in enumerate(input_boxes_L + input_boxes_R):
+                    if box.collidepoint(event.pos):
+                        active_box = i
             elif event.type == py.KEYDOWN:
-                if active:
+                if active_box is not None:
+                    team = teamL if active_box < 15 else teamR
+                    index = active_box if active_box < 15 else active_box - 15
+
                     if event.key == py.K_RETURN:
-                        print("Player ID Entered:", user_text)  # Process input
-                        user_text = ""  # Clear text after Enter
+                        print(f"Player ID Entered: {team[index]}")
                     elif event.key == py.K_BACKSPACE:
-                        user_text = user_text[:-1]  # Remove last character
+                        team[index] = team[index][:-1]  # Remove last character
                     else:
-                        user_text += event.unicode  # Append character
+                        team[index] += event.unicode  # Append character
 
-        # **DRAW INPUT BOX**
-        py.draw.rect(screen, color, input_box, 2)  # Draw input box border
+        # Draw input boxes and text
+        for i, box in enumerate(input_boxes_L):
+            color = color_active if active_box == i else color_inactive
+            py.draw.rect(screen, color, box, 2)
+            text_surface = FONT.render(teamL[i], True, py.Color("white"))
+            screen.blit(text_surface, (box.x + 5, box.y + 5))
 
-        # **RENDER TEXT INSIDE INPUT BOX**
-        text_surface = FONT.render(user_text, True, py.Color("white"))  # Render input text
-        screen.blit(text_surface, (input_box.x + 5, input_box.y + 10))  # Display text
-        
+        for i, box in enumerate(input_boxes_R):
+            color = color_active if active_box == i + 15 else color_inactive
+            py.draw.rect(screen, color, box, 2)
+            text_surface = FONT.render(teamR[i], True, py.Color("white"))
+            screen.blit(text_surface, (box.x + 5, box.y + 5))
+
         py.display.flip()
         clock.tick(60)
+    print(teamL)
+    print(teamR)
         
 def play_action():
     pass
