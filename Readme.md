@@ -54,7 +54,7 @@
 |--------------|-----------------|
 | solomon-sudo-e | Solomon Hufford |
 |              | Vane            |
-|  G-man-cmd  | Cade            |
+|  G-man-cmd  | Cade Childers |
 | Syd-SydneyJr  | Siddarth Suresh Babu             |
 |   | Walter          |
  _______________________________________
