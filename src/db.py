@@ -29,8 +29,8 @@ class Database:
             print("Connected to the database.")
         except Exception as error:
             print(f"Error connecting to PostgreSQL database: {error}")
-            # print("\n Quitting! \n")
-            # sys.exit()
+            print("\n Quitting! \n")
+            sys.exit()
 
     def table_exists(self, table_name):
         """Check if the table already exists in the database."""
