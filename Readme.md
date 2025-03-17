@@ -55,6 +55,6 @@
 | solomon-sudo-e | Solomon Hufford |
 |              | Vane            |
 |    | Cade            |
-| Syd-SydneyJr  | Syd             |
+| Syd-SydneyJr  | Siddarth Suresh Babu             |
 |   | Walter          |
  _______________________________________
