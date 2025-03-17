@@ -48,7 +48,7 @@ def on_tab(event: tk.Event, root: tk.Tk, entry_ids: Dict, users: Dict, builder: 
         user_id: int = int(event.widget.get())
         matching_players = []  # Initialize matching_players here
         database_response = db.fetch_all_players()  # Fetch all players
-        matching_players = [p for p in database_response if p[0] == user_id and len(p[1] > 0)]  # Find matching user ID
+        matching_players = [p for p in database_response if p[0] == user_id and len(p[1]) > 0]  # Find matching user ID
 
         # If user already exists in the database, autofill codename entry field
         if matching_players:
