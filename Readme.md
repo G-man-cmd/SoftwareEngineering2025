@@ -38,8 +38,7 @@
   -     3                    3            Walter
   -     4                    4            Vane
   -     5                    7            Cade
-  - When you are finished registering the first team's players use the mouse to click on the first entry space for the other team's equipment ID and proceed with the same process.
-  - Enter your equipment IDs the same as ones you entered in the traffic generator.
+  - When you are finished registering the first team's players use the mouse to click on the first entry space for the other team's equipment ID and proceed with the same process. NOTE. Be sure to tab again after typing in the code name to lock in the player. 
   - To clear all entries press the F12 key. 
   - When all players are entered via TAB key, click the continue button with mouse OR press F5 key. 
   - When ready to start the game, use the mouse to click the 'Start Game' button OR press F5 again.
