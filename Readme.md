@@ -53,7 +53,7 @@
 | GitHub Username | Real Name       |
 |--------------|-----------------|
 | solomon-sudo-e | Solomon Hufford |
-|              | Vane            |
+|  weathervanee  | Vane Ballinger  |
 |  G-man-cmd  | Cade Childers |
 | Syd-SydneyJr  | Siddarth Suresh Babu             |
 |   | Walter          |
