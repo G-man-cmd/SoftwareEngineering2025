@@ -55,6 +55,6 @@
 | solomon-sudo-e | Solomon Hufford |
 |              | Vane            |
 |    | Cade            |
-|   | Syd             |
+| Syd-SydneyJr  | Syd             |
 |   | Walter          |
  _______________________________________
