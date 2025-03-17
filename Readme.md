@@ -55,6 +55,6 @@
 | solomon-sudo-e | Solomon Hufford |
 |  weathervanee  | Vane Ballinger  |
 |  G-man-cmd  | Cade Childers |
-| Syd-SydneyJr  | Siddarth Suresh Babu             |
-|   | Walter          |
+| Syd-SydneyJr  | Siddarth Suresh Babu|
+| waltersarmiento  | Walter Sarmiento|
  _______________________________________
