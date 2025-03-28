@@ -4,7 +4,7 @@ from PIL import Image, ImageTk
 root = Tk()
 root.title("Splash Screen")
 
-img = Image.open("logo.jpg")
+img = Image.open("Python_Code/logo.jpg")
 img = img.resize((1600, 1000))
 photo = ImageTk.PhotoImage(img)
 
