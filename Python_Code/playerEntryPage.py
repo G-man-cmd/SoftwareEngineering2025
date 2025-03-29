@@ -43,6 +43,56 @@ table2.heading('GREEN TEAM', text='GREEN TEAM', anchor=tk.W)
 table2.grid(column = 2, row = 19)
 table2.pack(side=tk.RIGHT, expand=True, fill=tk.BOTH)
 
+def editGame():
+    pass
+def gameParameters():
+    pass
+def startGame():
+    pass
+def preEnteredGames():
+    pass
+def viewGame():
+    pass
+def flickSync():
+    pass
+def clearGame():
+    pass
+
+buttonFrame = tk.Frame(screen, bg="black")
+buttonFrame.pack(side=tk.BOTTOM, fill=tk.X, pady=20)
+f1 = tk.Button(buttonFrame, text = "F1\n Edit \n Game", bg = "black", fg = "green", command=editGame)
+f1.pack(side = tk.LEFT, padx=20)
+f2 = tk.Button(buttonFrame, text = "F2\nGame \nParameters", bg = "black", fg = "green", command=gameParameters)  
+f2.pack(side = tk.LEFT, padx=20)
+f3 = tk.Button(buttonFrame, text = "F3\nStart \nGame", bg = "black", fg = "green", command=startGame)
+f3.pack(side = tk.LEFT, padx=20)
+f4 = tk.Button(buttonFrame, text = "", bg = "black", fg = "black")
+f4.pack(side = tk.LEFT, padx=20)
+f5 = tk.Button(buttonFrame, text = "F5\nPreEntered\n Games", bg = "black", fg = "green", command=preEnteredGames)
+f5.pack(side = tk.LEFT, padx=20)
+f6 = tk.Button(buttonFrame, text = "", bg = "black", fg = "black")
+f6.pack(side = tk.LEFT, padx=20)
+f7 = tk.Button(buttonFrame, text = "F7\n", bg = "black", fg = "green")
+f7.pack(side = tk.LEFT, padx=20)
+f8 = tk.Button(buttonFrame, text = "F8\nView \nGame", bg = "black", fg = "green", command=viewGame)
+f8.pack(side = tk.LEFT, padx=20)
+f9 = tk.Button(buttonFrame, text = "", bg = "black", fg = "black")
+f9.pack(side = tk.LEFT, padx=20)
+f10 = tk.Button(buttonFrame, text = "F10\nFlick \nSync", bg = "black", fg = "green", command=flickSync)
+f10.pack(side = tk.LEFT, padx=20)
+f11 = tk.Button(buttonFrame, text = "", bg = "black", fg = "black")
+f11.pack(side = tk.LEFT, padx=20)
+f12 = tk.Button(buttonFrame, text = "F12\nClear \nGame", bg = "black", fg = "green", command=clearGame)
+f12.pack(side = tk.LEFT, padx=20)
+
+screen.bind("<F1>", lambda event: editGame())
+screen.bind("<F2>", lambda event: gameParameters())
+screen.bind("<F3>", lambda event: startGame())
+screen.bind("<F5>", lambda event: preEnteredGames())
+screen.bind("<F8>", lambda event: viewGame())
+screen.bind("<F10>", lambda event: flickSync())
+screen.bind("<F12>", lambda event: clearGame())
+
 def new_row(table, item):
     all_items = table.get_children()
     if item == all_items[-1]:  # If editing the last row
