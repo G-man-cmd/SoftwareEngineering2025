@@ -34,7 +34,6 @@
  _______________________________________
 | GitHub Username | Real Name       |
 |--------------|-----------------|
-| solomon-sudo-e | Solomon Hufford |
 |  weathervanee  | Vane Ballinger  |
 |  G-man-cmd  | Cade Childers |
 | Syd-SydneyJr  | Siddarth Suresh Babu|
