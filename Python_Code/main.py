@@ -17,7 +17,7 @@ current_screen = "PlayerEntry"
 root = tk.Tk()
 
 screen_width = (root.winfo_screenwidth() if root.winfo_screenwidth() < 1920 else 1920)-10
-screen_height = root.winfo_screenheight()-60
+screen_height = (root.winfo_screenheight() if root.winfo_screenheight() < 1080 else 1080 )-10
 
 img = Image.open("logo.jpg")
 img = img.resize((screen_width,screen_height))
