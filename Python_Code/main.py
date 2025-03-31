@@ -98,15 +98,21 @@ def create_entry_grid(red_frame,green_frame):
         green_details = [tk.StringVar(),tk.StringVar()]
         green_values[row-1] = green_details
 
-        red_entry = tk.Entry(red_frame, width=25, textvariable=red_details[0])
-        red_entry.grid(row=row+1, column=0, padx=10, pady=4, sticky="ew")
-        red_entry = tk.Entry(red_frame, width=25, textvariable=red_details[1])
-        red_entry.grid(row=row+1, column=1, padx=10, pady=4, sticky="ew")
+        red_label = tk.Label(red_frame,text=row-1,font=('calibre',10),fg='black',bg='red')
+        red_label.grid(row=row+1,column=0)
 
-        green_entry = tk.Entry(green_frame, width=25, textvariable=green_details[0])
-        green_entry.grid(row=row+1, column=0, padx=10, pady=4, sticky="ew")
-        green_entry = tk.Entry(green_frame, width=25, textvariable=green_details[1])
-        green_entry.grid(row=row+1, column=1, padx=10, pady=4, sticky="ew")
+        red_entry = tk.Entry(red_frame, width=20, textvariable=red_details[0])
+        red_entry.grid(row=row+1, column=1, padx=5, pady=4, sticky="ew")
+        red_entry = tk.Entry(red_frame, width=20, textvariable=red_details[1])
+        red_entry.grid(row=row+1, column=2, padx=5, pady=4, sticky="ew")
+
+        green_label = tk.Label(green_frame,text=row-1,font=('calibre',10),fg='black',bg='green')
+        green_label.grid(row=row+1,column=0)
+
+        green_entry = tk.Entry(green_frame, width=20, textvariable=green_details[0])
+        green_entry.grid(row=row+1, column=1, padx=5, pady=4, sticky="ew")
+        green_entry = tk.Entry(green_frame, width=20, textvariable=green_details[1])
+        green_entry.grid(row=row+1, column=2, padx=5, pady=4, sticky="ew")
 
 create_entry_grid(red_base,green_base)
 
