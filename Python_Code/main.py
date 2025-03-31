@@ -34,7 +34,7 @@ recv_port = 7501
 
 
 root.title("Edit Current Game")
-root.geometry(f"{screen_width-10}x{screen_height-50}")
+root.geometry(f"{screen_width-10}x{screen_height-60}")
 root.resizable(False, False)
 root.configure(background="black")
 root_label = tk.Label(root, text="Player Entry Screen", bg="black", height=4, width=40, bd=4, font=("Arial", 16, "bold"), fg="white")
