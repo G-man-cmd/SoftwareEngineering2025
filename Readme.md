@@ -3,7 +3,7 @@
   1. Download project as .zip file, extract the files to desired destination, navigate to the extracted folder and copy the /path/to/Software-Eng-Project/
   - Open terminal and change the directory to run the code:
   ```
-  cd SoftwareEngineering2025-main/SoftwareEngineering2025-main/
+  cd SoftwareEngineering2025-main/
   ```
 
   2. Install required libraries either manually:
