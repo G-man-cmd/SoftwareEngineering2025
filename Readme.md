@@ -3,7 +3,7 @@
   1. Download project as .zip file, extract the files to desired destination, navigate to the extracted folder and copy the /path/to/Software-Eng-Project/
   - Open terminal and change the directory to run the code:
   ```
-  cd /path/to/Software-Eng-Project/
+  cd SoftwareEngineering2025-main/SoftwareEngineering2025-main/Python_Code
   ```
 
   2. Install required libraries:
@@ -16,6 +16,7 @@
   pip install psycopg2-binary
   pip install pygubu
   pip install pygame
+  pip install --------
   ```
   - Run the program:
   ```
