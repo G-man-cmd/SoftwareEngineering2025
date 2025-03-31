@@ -25,3 +25,4 @@ six==1.16.0
 typing==3.7.4.3
 urllib3==1.26.5
 xdg==5
+tkScrolledFrame==1.0.4
