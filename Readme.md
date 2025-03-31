@@ -31,6 +31,11 @@
   ```
   python3 main.py
   ```
+  The Game will display a splash screen for 3 seconds and then take you to a player entry screen.
+
+  Once you have finished entering all the player names and the corect Hardware ID, Press F5 or the button labelled "Pregame Screen"
+
+  Then once you verify all the player names in the appropriate teams, Press F3 or the button labelled "Pregame Timer", This will start the 30 second timer.
  _______________________________________
 | GitHub Username | Real Name       |
 |--------------|-----------------|
