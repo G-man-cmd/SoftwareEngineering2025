@@ -3,6 +3,8 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 from tkscrolledframe import ScrolledFrame
 from time import sleep
+from tkinter import messagebox
+from database import Database
 
 
 red_values = {}
@@ -85,8 +87,71 @@ def network_frame():
     port_entry.grid(row=2,column=1)
     port_entry.insert(0,"7500")
  
+def check_for_duplicates_and_numbers():
+    seen = {}
+    duplicates = set()
+    invalid_numbers = set()  # Stores widget references
 
+    # Collect all values and check for duplicates
+    for row in range(2, 22):
+        for index, value in enumerate(red_values.get(row-1, [])):
+            entry_text = value.get().strip()
+            if entry_text:
+                if entry_text in seen:
+                    duplicates.add(seen[entry_text])  
+                    duplicates.add(value.widget)
+                else:
+                    seen[entry_text] = value.widget  
 
+        for index, value in enumerate(green_values.get(row-1, [])):
+            entry_text = value.get().strip()
+            if entry_text:
+                if entry_text in seen:
+                    duplicates.add(seen[entry_text])
+                    duplicates.add(value.widget)
+                else:
+                    seen[entry_text] = value.widget
+
+    # Check if red_entry2 and green_entry2 are numbers
+    for row in range(2, 22):
+        if red_values[row-1][1].get().strip():  
+            if not red_values[row-1][1].get().strip().isdigit():
+                invalid_numbers.add(red_values[row-1][1].widget)  
+
+        if green_values[row-1][1].get().strip():  # Check second green column
+            if not green_values[row-1][1].get().strip().isdigit():
+                invalid_numbers.add(green_values[row-1][1].widget)  
+
+    # Reset all entry backgrounds
+    for row in range(2, 22):
+        for entry_var in red_values.get(row-1, []):
+            entry_widget = entry_var.widget
+            if entry_widget:
+                entry_widget.config(bg="white")
+
+        for entry_var in green_values.get(row-1, []):
+            entry_widget = entry_var.widget
+            if entry_widget:
+                entry_widget.config(bg="white")
+
+    # Highlight duplicates in red and clear them
+    if duplicates:
+        for entry_widget in duplicates:
+            entry_widget.delete(0, tk.END)
+            entry_widget.config(bg="#ffcccc")
+
+        messagebox.showerror("Duplicate Entry", "Duplicate values found and cleared!")
+
+    # Highlight invalid numeric entries in yellow and clear them
+    if invalid_numbers:
+        for entry_widget in invalid_numbers:
+            entry_widget.delete(0, tk.END)
+            entry_widget.config(bg="#ffff99")
+
+        messagebox.showerror("Invalid Number", "Non-numeric values found in Hardware ID fields and cleared!")
+
+    return not duplicates and not invalid_numbers  # Return True if no issues found
+    
 
 def create_entry_grid(red_frame,green_frame):
     root.after(3000,network_frame)
@@ -101,18 +166,24 @@ def create_entry_grid(red_frame,green_frame):
         red_label = tk.Label(red_frame,text=row-1,font=('calibre',10),fg='black',bg='red')
         red_label.grid(row=row+1,column=0)
 
-        red_entry = tk.Entry(red_frame, width=20, textvariable=red_details[0])
-        red_entry.grid(row=row+1, column=1, padx=5, pady=4, sticky="ew")
-        red_entry = tk.Entry(red_frame, width=20, textvariable=red_details[1])
-        red_entry.grid(row=row+1, column=2, padx=5, pady=4, sticky="ew")
+        red_entry1 = tk.Entry(red_frame, width=25, textvariable=red_details[0])
+        red_entry1.grid(row=row+1, column=1, padx=5, pady=3, sticky="ew")
+        red_details[0].widget = red_entry1
+
+        red_entry2 = tk.Entry(red_frame, width=25, textvariable=red_details[1])
+        red_entry2.grid(row=row+1, column=2, padx=5, pady=3, sticky="ew")
+        red_details[1].widget = red_entry2
 
         green_label = tk.Label(green_frame,text=row-1,font=('calibre',10),fg='black',bg='green')
         green_label.grid(row=row+1,column=0)
 
-        green_entry = tk.Entry(green_frame, width=20, textvariable=green_details[0])
-        green_entry.grid(row=row+1, column=1, padx=5, pady=4, sticky="ew")
-        green_entry = tk.Entry(green_frame, width=20, textvariable=green_details[1])
-        green_entry.grid(row=row+1, column=2, padx=5, pady=4, sticky="ew")
+        green_entry1 = tk.Entry(green_frame, width=25, textvariable=green_details[0])
+        green_entry1.grid(row=row+1, column=1, padx=5, pady=3, sticky="ew")
+        green_details[0].widget = green_entry1
+
+        green_entry2 = tk.Entry(green_frame, width=25, textvariable=green_details[1])
+        green_entry2.grid(row=row+1, column=2, padx=5, pady=3, sticky="ew")
+        green_details[1].widget = green_entry1
 
 create_entry_grid(red_base,green_base)
 
@@ -142,105 +213,108 @@ def startGame():
 
 
 def preEnteredGames():
-    network_frame.destroy()
-    unwrap_entries()
-    root_label.config(text="Live Events")
-    if current_screen == "PlayerEntry":
-        base.grid_forget()
-        base.destroy()
+    if check_for_duplicates_and_numbers():
+        network_frame.destroy()
+        unwrap_entries()
+        root_label.config(text="Live Events")
+        if current_screen == "PlayerEntry":
+            base.grid_forget()
+            base.destroy()
 
-        live_base = tk.Frame(root,height=400,width=1000,bg='white')
-        live_base.pack()
+            live_base = tk.Frame(root,height=400,width=1000,bg='white')
+            live_base.pack()
 
-        red_live = tk.Frame(live_base,height=400,width=500,bg='red',padx=30, pady=0)
-        red_live.pack(side='left')
+            red_live = tk.Frame(live_base,height=400,width=500,bg='red',padx=30, pady=0)
+            red_live.pack(side='left')
 
-        red_live_tree = ttk.Treeview(red_live, selectmode ='browse',height=15)
-        red_live_tree.pack(side ='right',anchor='s',pady=50)
+            red_live_tree = ttk.Treeview(red_live, selectmode ='browse',height=15)
+            red_live_tree.pack(side ='right',anchor='s',pady=50)
 
-        red_live_tree["columns"] = ("1", "2", "3")
-        red_live_tree["show"] = 'headings'
+            red_live_tree["columns"] = ("1", "2", "3")
+            red_live_tree["show"] = 'headings'
 
-        red_live_tree.column("1", width = 165, anchor ='c')
-        red_live_tree.column("2", width = 90, anchor ='se')
-        red_live_tree.column("3", width = 165, anchor ='se')
+            red_live_tree.column("1", width = 165, anchor ='c')
+            red_live_tree.column("2", width = 90, anchor ='se')
+            red_live_tree.column("3", width = 165, anchor ='se')
 
-        verscrlbar = ttk.Scrollbar(red_live, 
-                           orient ="vertical", 
-                           command = red_live_tree.yview)
-        verscrlbar.pack(side ='right', fill ='x')
-        red_live_tree.configure(xscrollcommand = verscrlbar.set)
+            verscrlbar = ttk.Scrollbar(red_live, 
+                            orient ="vertical", 
+                            command = red_live_tree.yview)
+            verscrlbar.pack(side ='right', fill ='x')
+            red_live_tree.configure(xscrollcommand = verscrlbar.set)
 
-        red_live_tree.heading("1", text ="Name")
-        red_live_tree.heading("2", text ="H_ID")
-        red_live_tree.heading("3", text ="Score")
+            red_live_tree.heading("1", text ="Name")
+            red_live_tree.heading("2", text ="H_ID")
+            red_live_tree.heading("3", text ="Score")
 
-        label_red = tk.Label(red_live, text="RED TEAM", font=("Arial", 14, "bold"), bg="red", fg="white")
-        label_red.place(relx=0.5, rely=0.05, anchor="center")
+            label_red = tk.Label(red_live, text="RED TEAM", font=("Arial", 14, "bold"), bg="red", fg="white")
+            label_red.place(relx=0.5, rely=0.05, anchor="center")
 
-        label_red_total = tk.Label(red_live, text="Total Score: 0", font=("Arial", 14, "bold"), bg="red", fg="white")
-        label_red_total.place(x=300,y=380)
-
-
-        green_live = tk.Frame(live_base,height=400,width=500,bg='green',padx=30, pady=0)
-        green_live.pack(side='right')
-        green_live.grid_propagate(0)
-        
-        green_live_tree = ttk.Treeview(green_live, selectmode ='browse',height=15)
-        green_live_tree.pack(side ='right',anchor='s',pady=50)
-
-        green_live_tree["columns"] = ("1", "2", "3")
-        green_live_tree["show"] = 'headings'
-
-        green_live_tree.column("1", width = 165, anchor ='c')
-        green_live_tree.column("2", width = 90, anchor ='se')
-        green_live_tree.column("3", width = 165, anchor ='se')
-
-        verscrlbar = ttk.Scrollbar(green_live, 
-                           orient ="vertical", 
-                           command = green_live_tree.yview)
-        verscrlbar.pack(side ='right', fill ='x')
-        red_live_tree.configure(xscrollcommand = verscrlbar.set)
-
-        green_live_tree.heading("1", text ="Name")
-        green_live_tree.heading("2", text ="H_ID")
-        green_live_tree.heading("3", text ="Score")
-
-        label_green = tk.Label(green_live, text="GREEN TEAM", font=("Arial", 14, "bold"), bg="green", fg="white")
-        label_green.place(relx=0.5, rely=0.05, anchor="center")
-
-        label_green_total = tk.Label(green_live, text="Total Score: 0", font=("Arial", 14, "bold"), bg="green", fg="white")
-        label_green_total.place(x=300,y=380)
+            label_red_total = tk.Label(red_live, text="Total Score: 0", font=("Arial", 14, "bold"), bg="red", fg="white")
+            label_red_total.place(x=300,y=380)
 
 
-        for i in red_values.keys():
-            name = (red_values[i])[0]
-            h_id = (red_values[i])[1]
-            if len(name) > 0:
-                red_live_tree.insert("", 'end', text ="L1", values =(name, h_id, "0"))
+            green_live = tk.Frame(live_base,height=400,width=500,bg='green',padx=30, pady=0)
+            green_live.pack(side='right')
+            green_live.grid_propagate(0)
+            
+            green_live_tree = ttk.Treeview(green_live, selectmode ='browse',height=15)
+            green_live_tree.pack(side ='right',anchor='s',pady=50)
+
+            green_live_tree["columns"] = ("1", "2", "3")
+            green_live_tree["show"] = 'headings'
+
+            green_live_tree.column("1", width = 165, anchor ='c')
+            green_live_tree.column("2", width = 90, anchor ='se')
+            green_live_tree.column("3", width = 165, anchor ='se')
+
+            verscrlbar = ttk.Scrollbar(green_live, 
+                            orient ="vertical", 
+                            command = green_live_tree.yview)
+            verscrlbar.pack(side ='right', fill ='x')
+            red_live_tree.configure(xscrollcommand = verscrlbar.set)
+
+            green_live_tree.heading("1", text ="Name")
+            green_live_tree.heading("2", text ="H_ID")
+            green_live_tree.heading("3", text ="Score")
+
+            label_green = tk.Label(green_live, text="GREEN TEAM", font=("Arial", 14, "bold"), bg="green", fg="white")
+            label_green.place(relx=0.5, rely=0.05, anchor="center")
+
+            label_green_total = tk.Label(green_live, text="Total Score: 0", font=("Arial", 14, "bold"), bg="green", fg="white")
+            label_green_total.place(x=300,y=380)
 
 
-        for i in green_values.keys():
-            name = (green_values[i])[0]
-            h_id = (green_values[i])[1]
-            if len(name) > 0:
-                green_live_tree.insert("", 'end', text ="L1", values =(name, h_id, "0"))
-        
+            for i in red_values.keys():
+                name = (red_values[i])[0]
+                h_id = (red_values[i])[1]
+                if len(name) > 0:
+                    red_live_tree.insert("", 'end', text ="L1", values =(name, h_id, "0"))
 
 
-        event_live_scroll = tk.Frame(root,height=400,width=1000,bg='white')
-        event_live_scroll.pack()
+            for i in green_values.keys():
+                name = (green_values[i])[0]
+                h_id = (green_values[i])[1]
+                if len(name) > 0:
+                    green_live_tree.insert("", 'end', text ="L1", values =(name, h_id, "0"))
+            
 
-        sf = ScrolledFrame(event_live_scroll,height=500,width=980)
-        sf.pack(side="top", expand=1, fill="both",pady=30)
-        scroll_frame = sf.display_widget(tk.Frame)
-        label_live = tk.Label(event_live_scroll, text="Live Events", font=("Arial", 12,), fg="black", bg="white")
-        label_live.place(relx=0.5, rely=0.08, anchor="center")
 
-        global timer_canvas
-        timer_canvas = tk.Frame(root,height=150,width=280,bg='black')
-        timer_canvas.place(x=1550,y=450)
-    
+            event_live_scroll = tk.Frame(root,height=400,width=1000,bg='white')
+            event_live_scroll.pack()
+
+            sf = ScrolledFrame(event_live_scroll,height=500,width=980)
+            sf.pack(side="top", expand=1, fill="both",pady=30)
+            scroll_frame = sf.display_widget(tk.Frame)
+            label_live = tk.Label(event_live_scroll, text="Live Events", font=("Arial", 12,), fg="black", bg="white")
+            label_live.place(relx=0.5, rely=0.08, anchor="center")
+
+            global timer_canvas
+            timer_canvas = tk.Frame(root,height=150,width=280,bg='black')
+            timer_canvas.place(x=1550,y=450)
+    else:
+        pass
+
 network_address = network_address.get()
 broadcast_port = broadcast_port.get()
 
