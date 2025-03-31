@@ -91,7 +91,7 @@ def network_frame():
 def create_entry_grid(red_frame,green_frame):
     root.after(3000,network_frame)
 
-    for row in range(2,23):  #20 rows
+    for row in range(2,22):  #20 rows
         red_details = [tk.StringVar(),tk.StringVar()]
         red_values[row-1] = red_details
 
