@@ -20,7 +20,7 @@ photon_player = RandomTrackPlayer(track_list)
 current_screen = "PlayerEntry"
 
 
-splash_screen_duration = 3
+splash_screen_duration = 3000
 
 root = tk.Tk()
 
