@@ -5,16 +5,22 @@ from tkscrolledframe import ScrolledFrame
 from time import sleep
 from tkinter import messagebox
 from database import Database
+from server import Server
+from scrollframe import ScrollableTextFrame
+from music import RandomTrackPlayer
 
 
 red_values = {}
 green_values = {}
 
+track_list=["Track01.mp3","Track03.mp3","Track05.mp3" ,"Track07.mp3","Track02.mp3","Track04.mp3","Track06.mp3","Track08.mp3"]
 
+photon_player = RandomTrackPlayer(track_list)
 
 current_screen = "PlayerEntry"
 
 
+splash_screen_duration = 3
 
 root = tk.Tk()
 
@@ -28,11 +34,39 @@ photo = ImageTk.PhotoImage(img)
 label = tk.Label(root, image = photo)
 label.pack()
 
-root.after(3000, label.destroy)
+root.after(splash_screen_duration, label.destroy)
 
-network_address = tk.StringVar()
-broadcast_port = tk.StringVar()
-recv_port = 7501
+default_bind_address = tk.StringVar()
+default_bind_port = tk.StringVar()
+
+default_broadcast_addr = tk.StringVar()
+default_broadcast_port = tk.StringVar()
+
+#live_events = ScrollableTextFrame(tk.Frame(root,bg='black'))
+
+
+
+
+def submit():
+
+    global listen_addr
+    global listen_port
+
+    global bcast_addr
+    global bcast_port
+
+    listen_addr=default_bind_address.get()
+    listen_port=int(default_bind_port.get())
+
+    bcast_addr = default_broadcast_addr.get()
+    bcast_port = int(default_broadcast_port.get())
+    
+    print("The list_addr is : ", listen_addr)
+    print("The listen_port is : ", listen_port)
+
+    print("The list_addr is : ", bcast_addr)
+    print("The listen_port is : ", bcast_port)
+
 
 
 root.title("Edit Current Game")
@@ -75,17 +109,30 @@ def network_frame():
     widget_label = tk.Label(network_frame, text = 'Network Interface', font=('calibre',12, 'bold'),fg="red",bg="black")
     widget_label.grid(row=0,column=1,padx=2)
 
-    add_label = tk.Label(network_frame, text = 'Address: ', font=('calibre',10),fg="white",bg="black")
-    add_label.grid(row=1,column=0)
-    add_entry = tk.Entry(network_frame, font=('calibre',10,'normal'),textvariable=network_address)
-    add_entry.insert(0,"127.0.0.1")
-    add_entry.grid(row=1,column=1)
+    bind_addr_label = tk.Label(network_frame, text = 'Bind Address: ', font=('calibre',10),fg="white",bg="black")
+    bind_addr_label.grid(row=1,column=0,pady=2)
+    bind_addr_entry = tk.Entry(network_frame, font=('calibre',10,'normal'),textvariable=default_bind_address)
+    bind_addr_entry.insert(0,"0.0.0.0")
+    bind_addr_entry.grid(row=1,column=1,pady=2)
 
-    port_label = tk.Label(network_frame, text = 'Broadcast Port: ', font = ('calibre',10),fg="white",bg="black")
-    port_label.grid(row=2,column=0)
-    port_entry=tk.Entry(network_frame, font = ('calibre',10,'normal'),textvariable=broadcast_port)
-    port_entry.grid(row=2,column=1)
-    port_entry.insert(0,"7500")
+    bind_port_label = tk.Label(network_frame, text = 'Bind Port: ', font=('calibre',10),fg="white",bg="black")
+    bind_port_label.grid(row=2,column=0,pady=2)
+    bind_port_entry = tk.Entry(network_frame, font=('calibre',10,'normal'),textvariable=default_bind_port)
+    bind_port_entry.insert(0,"7501")
+    bind_port_entry.grid(row=2,column=1,pady=2)
+
+
+    transmit_addr_label = tk.Label(network_frame, text = 'Broadcast Address: ', font = ('calibre',10),fg="white",bg="black")
+    transmit_addr_label.grid(row=3,column=0)
+    transmit_addr_entry=tk.Entry(network_frame, font = ('calibre',10,'normal'),textvariable=default_broadcast_addr)
+    transmit_addr_entry.grid(row=3,column=1,pady=2)
+    transmit_addr_entry.insert(0,"127.0.0.1")
+
+    transmit_port_label = tk.Label(network_frame, text = 'Broadcast Port: ', font = ('calibre',10),fg="white",bg="black")
+    transmit_port_label.grid(row=4,column=0)
+    transmit_port_entry=tk.Entry(network_frame, font = ('calibre',10,'normal'),textvariable=default_broadcast_port)
+    transmit_port_entry.grid(row=4,column=1,pady=2)
+    transmit_port_entry.insert(0,"7500")
  
 def check_for_duplicates_and_numbers():
     seen = {}
@@ -188,34 +235,68 @@ def create_entry_grid(red_frame,green_frame):
 create_entry_grid(red_base,green_base)
 
 
-
-
-def countdown_timer(root: tk.Tk, reference_frame: tk.Frame, duration: int = 30) -> None:
-    timer_label = tk.Label(reference_frame, text=f"{duration} sec", font=("Monotone", 50), fg="white", bg="black")
+def countdown_timer(root, reference_frame, pregame_duration=30, game_duration=360, start_callback=None, end_callback=None):   
+    timer_label = tk.Label(reference_frame, text=f"{pregame_duration} sec", font=("Monotone", 80), fg="black", bg="white")
     timer_label.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
-    def update_timer(time_left: int):
+    def update_timer(time_left: int, is_pregame=True):
         if time_left > 0:
             timer_label.config(text=f"{time_left} sec")
-            root.after(1000, lambda: update_timer(time_left - 1))
+            root.after(1000, lambda: update_timer(time_left - 1, is_pregame))
+            if time_left == 17:
+                photon_player.play_random_track()
         else:
-            timer_label.config(text="Finished", fg="red")
+            if is_pregame:
+                # Pregame countdown finished → Start game countdown
+                timer_label.config(text="Start!", fg="green")
+                if start_callback:
+                    start_callback()  # Execute game start action
+                root.after(1000, lambda: update_timer(game_duration, is_pregame=False))
+            else:
+                # Game countdown finished
+                timer_label.config(text="Game\nOver!", fg="red")
+                if end_callback:
+                    end_callback()  # Execute game end action
 
-    update_timer(duration)
+    update_timer(pregame_duration, is_pregame=True)
+
+
 
 def editGame():
     pass
 def gameParameters():
     unwrap_entries()
-def startGame():
-    current_screen = "Live"
-    countdown_timer(root,timer_canvas)
+
+def tx_startcode():
+    photon_server.broadcast_code("202")
+    print("Start Code 202 Sent")
+
+def tx_endcode():
+    photon_player.stop_track()
+    photon_server.broadcast_code("221")
+    print("End Code 221 Sent")
+    photon_server.broadcast_code("221")
+    print("End Code 221 Sent")
+    photon_server.broadcast_code("221")
+    print("End Code 221 Sent")
+    photon_server.stop()
+    photon_db.conn.close()
 
 
 def preEnteredGames():
     if check_for_duplicates_and_numbers():
+        submit()
         network_frame.destroy()
+
+        global photon_db
+
+        photon_db = Database(dbname='info',user='syd',passwd='syd7')
+
         unwrap_entries()
+
+        photon_db.load_players(red_team=red_values,green_team=green_values)
+
+
         root_label.config(text="Live Events")
         if current_screen == "PlayerEntry":
             base.grid_forget()
@@ -227,6 +308,8 @@ def preEnteredGames():
             red_live = tk.Frame(live_base,height=400,width=500,bg='red',padx=30, pady=0)
             red_live.pack(side='left')
 
+            global red_live_tree
+            global green_live_tree
             red_live_tree = ttk.Treeview(red_live, selectmode ='browse',height=15)
             red_live_tree.pack(side ='right',anchor='s',pady=50)
 
@@ -249,6 +332,8 @@ def preEnteredGames():
 
             label_red = tk.Label(red_live, text="RED TEAM", font=("Arial", 14, "bold"), bg="red", fg="white")
             label_red.place(relx=0.5, rely=0.05, anchor="center")
+            
+            global label_red_total
 
             label_red_total = tk.Label(red_live, text="Total Score: 0", font=("Arial", 14, "bold"), bg="red", fg="white")
             label_red_total.place(x=300,y=380)
@@ -281,6 +366,8 @@ def preEnteredGames():
             label_green = tk.Label(green_live, text="GREEN TEAM", font=("Arial", 14, "bold"), bg="green", fg="white")
             label_green.place(relx=0.5, rely=0.05, anchor="center")
 
+            global label_green_total
+
             label_green_total = tk.Label(green_live, text="Total Score: 0", font=("Arial", 14, "bold"), bg="green", fg="white")
             label_green_total.place(x=300,y=380)
 
@@ -303,21 +390,82 @@ def preEnteredGames():
             event_live_scroll = tk.Frame(root,height=400,width=1000,bg='white')
             event_live_scroll.pack()
 
-            sf = ScrolledFrame(event_live_scroll,height=500,width=980)
-            sf.pack(side="top", expand=1, fill="both",pady=30)
-            scroll_frame = sf.display_widget(tk.Frame)
             label_live = tk.Label(event_live_scroll, text="Live Events", font=("Arial", 12,), fg="black", bg="white")
             label_live.place(relx=0.5, rely=0.08, anchor="center")
 
+            live_events = ScrollableTextFrame(event_live_scroll)
+
+            global photon_server
+            photon_server = Server(recv_addr=listen_addr,
+                                    recv_port=listen_port,
+                                    bcast_addr=bcast_addr,
+                                    bcast_port=bcast_port,
+                                    db_obj=photon_db,
+                                    scrollframe_obj=live_events
+                                )
+            photon_server.start()
+
+
             global timer_canvas
-            timer_canvas = tk.Frame(root,height=150,width=280,bg='black')
-            timer_canvas.place(x=1550,y=450)
+            timer_canvas = tk.Frame(root,height=350,width=350,bg='white')
+            timer_canvas.place(x=1500,y=350)
     else:
         pass
 
-network_address = network_address.get()
-broadcast_port = broadcast_port.get()
+def update_scores():
+    for item in green_live_tree.get_children():
+        photon_db.execute_query(f"select score from current_game where hardware_id = {green_live_tree.item(item)['values'][1]}")
+        new_score = photon_db.fetch_results()[0][0]
+        green_live_tree.item(item, values=(green_live_tree.item(item)['values'][0], 
+                                        green_live_tree.item(item)['values'][1], 
+                                        new_score))
+    for item in red_live_tree.get_children():
+        photon_db.execute_query(f"select score from current_game where hardware_id = {red_live_tree.item(item)['values'][1]}")
+        new_score = photon_db.fetch_results()[0][0]
+        red_live_tree.item(item, values=(red_live_tree.item(item)['values'][0], 
+                                        red_live_tree.item(item)['values'][1], 
+                                        new_score))
 
+    photon_db.execute_query(f"SELECT SUM(score) AS total_score FROM current_game WHERE team_name = 'G';")
+    green_total = photon_db.fetch_results()[0][0]
+
+    photon_db.execute_query(f"SELECT SUM(score) AS total_score FROM current_game WHERE team_name = 'R';")
+    red_total = photon_db.fetch_results()[0][0]
+        
+
+    try:
+        photon_db.execute_query(f"SELECT SUM(score) AS total_score FROM current_game WHERE team_name = 'G';")
+        green_total = photon_db.fetch_results()[0][0]
+
+        photon_db.execute_query(f"SELECT SUM(score) AS total_score FROM current_game WHERE team_name = 'R';")
+        red_total = photon_db.fetch_results()[0][0]
+
+        if green_total > red_total:
+            label_green_total.config(fg='yellow')
+            label_red_total.config(fg="white")
+        else:
+            label_green_total.config(fg='white')
+            label_red_total.config(fg="yellow")
+
+        label_green_total.config(text=f'Total Score: {green_total}')
+        label_red_total.config(text=f'Total Score: {red_total}')
+    except TypeError as e:
+        pass
+    
+    root.after(200, update_scores)
+
+
+
+
+
+def startGame():
+    current_screen = "Live"
+    update_scores()
+    timer = countdown_timer(root,timer_canvas, pregame_duration=30, game_duration=360, 
+                  start_callback=tx_startcode, end_callback=tx_endcode)
+
+
+    
 
 def viewGame():
     unwrap_entries()
@@ -329,13 +477,14 @@ def viewGame():
     print(green_values)
 
 def flickSync():
-    pass
+    print(photon_server.shooter_name)
 
 def clearGame():
     if current_screen == "PlayerEntry":
         create_entry_grid(red_base)
         create_entry_grid(green_base)
 
+red_players = {}
 
 def unwrap_entries():
     if current_screen == "PlayerEntry":
@@ -344,12 +493,21 @@ def unwrap_entries():
             for j in red_values[i]:
                 values.append(j.get())
             red_values[i]=values
+
         
         for i in green_values.keys():
             values = []
             for j in green_values[i]:
                 values.append(j.get())
             green_values[i]=values
+    
+        for i in list(red_values.keys()):  # Use list() to avoid dictionary size change during iteration
+            if len(red_values[i][0]) <= 0 and len(red_values[i][1]) <= 0:
+                del red_values[i]
+
+        for j in list(green_values.keys()):  # Use list() for safe iteration
+            if len(green_values[j][0]) <= 0 and len(green_values[j][1]) <= 0:
+                del green_values[j]
 
 
 
