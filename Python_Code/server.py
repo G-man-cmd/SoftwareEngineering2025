@@ -3,12 +3,12 @@ import threading
 from datetime import datetime
 
 class Server:
-    def __init__(self, recv_addr="0.0.0.0",recv_port = 7501, bcast_addr="255.255.255.255", bcast_port=7500,db_obj=None,scrollframe_obj=None):
+    def __init__(self, recv_addr="0.0.0.0",recv_port = 7501, bcast_addr="255.255.255.255", bcast_port=7500,game_obj=None,scrollframe_obj=None):
         self.recv_addr = recv_addr
         self.recv_port = recv_port
         self.bcast_addr = bcast_addr
         self.bcast_port = bcast_port
-        self.db_obj = db_obj
+        self.game_obj = game_obj
         self.scrollframe_obj = scrollframe_obj
         self.running = True
 
@@ -34,35 +34,24 @@ class Server:
 
                     if ":" in data and self.running:
                         shooter_id, target_id = data.split(':')
-                        self.db_obj.execute_query(f"select players.codename, current_game.team_name, current_game.score from players join current_game on players.id = current_game.player_id where current_game.hardware_id = {shooter_id};")
                         
                         try:
-                            results = self.db_obj.fetch_results();
-                            shooter_name = results[0][0]
-                            shooter_team = results[0][1]
-                            shooter_score = results[0][2]
+                            results = self.game_obj.get_player_by_hardware_id(shooter_id)
+                            results.update_score(points = 10)
+                            shooter_name = results.player_name
+                            shooter_team = results.team_name
+                            shooter_score = results.score
+                            shooter_id = results.player_id
 
-                            self.db_obj.execute_query(f"select players.codename, current_game.team_name, current_game.score from players join current_game on players.id = current_game.player_id where current_game.hardware_id = {target_id};")
+                            results = self.game_obj.get_player_by_hardware_id(target_id)
+                            target_name = results.player_name
+                            target_team = results.team_name
+                            target_score = results.score
+                            target_id = results.player_id
 
-                            results = self.db_obj.fetch_results();
-                            target_name = results[0][0]
-                            target_team = results[0][1]
-                            target_score = results[0][2]
 
-                            self.db_obj.execute_query(f'''UPDATE current_game AS shooter
-                                                            SET score = shooter.score + 
-                                                                CASE 
-                                                                    WHEN shooter.team_name <> target.team_name THEN 10  -- Different teams → +10 points
-                                                                    WHEN shooter.team_name = target.team_name THEN -10  -- Same team → -10 points
-                                                                    ELSE 0
-                                                                END
-                                                            FROM current_game AS target
-                                                            WHERE shooter.hardware_id = {shooter_id}
-                                                            AND target.hardware_id = {target_id}
-                                                            AND shooter.team_name IS NOT NULL
-                                                            AND target.team_name IS NOT NULL;
-                                                        '''
-                                                        )
+
+                            
 
 
                         except IndexError as e:
