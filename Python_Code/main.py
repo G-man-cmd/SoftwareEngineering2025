@@ -290,7 +290,7 @@ def preEnteredGames():
 
         global photon_db
 
-        photon_db = Database(dbname='info',user='syd',passwd='syd7')
+        photon_db = Database(dbname='photon',user='student')
 
         unwrap_entries()
 
