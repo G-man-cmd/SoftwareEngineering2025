@@ -10,6 +10,8 @@ from scrollframe import ScrollableTextFrame
 from music import RandomTrackPlayer
 from current_game import CurrentGame,Player
 
+pregame_timer = 5
+game_timer =15
 
 red_values = {}
 green_values = {}
@@ -476,7 +478,7 @@ def init_hardware(event):
 def startGame():
     current_screen = "Live"
     update_scores()
-    timer = countdown_timer(root,timer_canvas, pregame_duration=5, game_duration=10, 
+    timer = countdown_timer(root,timer_canvas, pregame_duration=pregame_timer, game_duration=game_timer, 
                   start_callback=tx_startcode, end_callback=tx_endcode)
 
 
