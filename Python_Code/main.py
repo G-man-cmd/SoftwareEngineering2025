@@ -10,8 +10,8 @@ from scrollframe import ScrollableTextFrame
 from music import RandomTrackPlayer
 from current_game import CurrentGame,Player
 
-pregame_timer = 5
-game_timer =15
+pregame_timer = 30
+game_timer = 15
 
 red_values = {}
 green_values = {}
