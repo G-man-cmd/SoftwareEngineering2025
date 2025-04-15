@@ -424,7 +424,7 @@ class App(tk.Tk):
         buttonFrame = tk.Frame(self,bg="black")
         f1 = tk.Button(buttonFrame, text = "F1\n Edit \n Game", bg = "black", fg = "green", command=lambda: self.reset())
         f1.grid(row=0,column=1)
-        f3 = tk.Button(buttonFrame, text = "F3\nPregame\nTimer", bg = "black", fg = "green", command= lambda: self.frames['pregame_screen'].start_countdown(20,10))
+        f3 = tk.Button(buttonFrame, text = "F3\nPregame\nTimer", bg = "black", fg = "green", command= lambda: self.frames['pregame_screen'].start_countdown(30,360))
         f3.grid(row=0,column=2)
         f5 = tk.Button(buttonFrame, text = "F5\nPregame\n Screen", bg = "black", fg = "green", command=(lambda: self.goto_pregame_screen()))
         f5.grid(row=0,column=3)
