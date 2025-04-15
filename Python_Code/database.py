@@ -1,6 +1,5 @@
 import psycopg2
 import sys
-
 import time
 
 
@@ -15,8 +14,6 @@ class Database:
             self.cursor = self.conn.cursor()
             print("Connected to the database.")
 
-
-
         except Exception as error:
             print(f"Error connecting to PostgreSQL database: {error}")
             print("\n Quitting! \n")
@@ -29,12 +26,11 @@ class Database:
             print("Query executed successfully")
         except psycopg2.Error as e:
             print(f"Error executing query: {e}")
-            pass
-    
+            self.conn.rollback()    
             
     def fetch_results(self):
         try:
             return self.cursor.fetchall()
         except psycopg2.Error as e:
             print(f"Error fetching results: {e}")
-            return None
+            self.conn.rollback()
