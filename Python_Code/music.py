@@ -16,6 +16,6 @@ class RandomTrackPlayer:
         pygame.mixer.music.play()
         print(f"Now playing: {track}")
 
-    def stop_track(self):
+    def stop_track(self): #stop
         pygame.mixer.music.stop()
         print("Playback stopped.")
