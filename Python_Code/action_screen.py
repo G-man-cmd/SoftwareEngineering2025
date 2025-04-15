@@ -10,6 +10,10 @@ class Player:
         self.ID = ID
         self.Nickname = Nickname
         self.score = score
+    def player_reached_base(self, player: Player, team_table: ttk.Treeview) -> None:
+        #update score?
+        player.mark_reach_base()
+        self.update_player_name(team_table, player.ID, player.Nickname)
 
 class game_screen:
     def __init__(self, players: Dict[str, List[Player]]):
@@ -66,5 +70,11 @@ class game_screen:
         else:
             self.timer_label.config(text = "Finished", fg = "red")
 
+    def update_player_name(self, team_table: ttk.Treeview, player_id: str, new_name: str) -> None:
+        for item in team_table.get_children():
+            values = team_table.item(item, "values")
+            if values[1] == player_id:
+                team_table.item(item, values=(values[0], values[1], new_name, values[3]))
+                break
     #will probably need to go back to player entry eventually
 #delete or comment out everything below after testing it.

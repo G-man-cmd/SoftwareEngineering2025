@@ -7,6 +7,7 @@ class Player:
         self.hardware_id = hardware_id
         self.team_name = team_name
         self.score = score
+        self.reach_base = False
     
     def info(self):
         print(self.player_id,
@@ -18,6 +19,10 @@ class Player:
     def update_score(self, points: int):
         self.score += points
 
+    def update_reach_base(self):
+        if not self.reach_base:
+            self.player_name += " [B]"
+            self.reach_base = True
 
 class CurrentGame:
     def __init__(self):
