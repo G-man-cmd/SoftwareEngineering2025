@@ -21,6 +21,13 @@ class ScrollableTextFrame:
         self.scrollbar.pack(side="right", fill="y")
 
         self.text_labels = []
+    
+    def clear_all_text(self):
+        for label in self.text_labels:
+            label.destroy()
+        self.text_labels.clear()
+        self.canvas.update_idletasks()
+        self.canvas.yview_moveto(0.0)
 
     def add_text(self, new_text):
         label = tk.Label(self.scrollable_frame, text=new_text, bg="white", fg="black", anchor="w", justify="left")
