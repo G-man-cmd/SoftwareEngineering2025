@@ -6,7 +6,7 @@
   cd SoftwareEngineering2025-main/
   ```
 
-  2. Install required libraries either manually:
+2. Install required libraries either manually:
   ```    
   sudo apt-get install python3-tk
   sudo apt install python3-pip
